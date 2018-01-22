@@ -91,6 +91,7 @@
   },
   "devDependencies": {
     "eslint": "^4.15.0",
-    "eslint-plugin-react": "^7.5.1"
+    "eslint-plugin-react": "^7.5.1",
+    "immutable": "^3.8.2"
   }
 }
