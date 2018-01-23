@@ -20,6 +20,7 @@
     "globals": {
         "document": true,
         "console": true,
+        "Console": true,
         "Promise": true,
         "jest": true,
         "describe": true,
@@ -29,12 +30,14 @@
         "beforeEach": true,
         "beforeAll": true,
         "afterEach": true,
-        "afterAll": true
+        "afterAll": true,
+        "window": true
     },
     "rules": {
+        "no-console":0,
         "indent": [
             "error",
-            2
+            4
         ],
         "linebreak-style": [
             "error",
@@ -43,10 +46,6 @@
         "quotes": [
             "error",
             "single"
-        ],
-        "semi": [
-            "error",
-            "always"
         ]
     }
 }
