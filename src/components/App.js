@@ -1,10 +1,13 @@
 import React from 'react';
 import TaskListContainer from '../containers/TaskListContainer';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const App = () => {
     return (
         <div>
-            <TaskListContainer/>
+            <MuiThemeProvider>
+                <TaskListContainer/>
+            </MuiThemeProvider>
         </div>
     );
 }; 
