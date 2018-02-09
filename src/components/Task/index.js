@@ -4,28 +4,24 @@ import PropTypes from 'prop-types';
 import { Checkbox, FloatingActionButton, TextField, DatePicker} from 'material-ui';
 import ContentRemove from 'material-ui/svg-icons/content/remove';
 
-
-
 export default class Task extends React.Component {
     static propTypes = {
         listIndex: PropTypes.number.isRequired,
         taskIndex: PropTypes.number.isRequired,
         text: PropTypes.string,
-        duedate: PropTypes.string,
+        duedate: PropTypes.object,
         check: PropTypes.bool.isRequired,
         onCheck: PropTypes.func,
         onRemove: PropTypes.func.isRequired,
-        onChangeText: PropTypes.func.isRequired
+        onChangeText: PropTypes.func.isRequired,
+        onChangeDuedate: PropTypes.func.isRequired
     };
     
     constructor(props) {
         super(props);
     }
 
-
     render () {
-        const duedate = new Date();
-        duedate.setFullYear(duedate.getFullYear() - 1);
         return (
             <div
                 className = 'Task'
@@ -44,17 +40,19 @@ export default class Task extends React.Component {
                     onCheck = {() => this.props.onCheck(this.props.listIndex, this.props.taskIndex)}
                 />
                 <TextField
-                    id = "text-field-default"
+                    id = "task textfield"
                     label = "text"
                     hintText = "Task 내용을 적어주세요"
-                    defaultValue = {this.props.text}
+                    value = {this.props.text}
                     floatingLabelText = "Task"
-                    onChange = {(e) => this.props.onChangeText(this.props.listIndex, this.props.taskIndex, e)}
+                    onChange = {(e) => this.props.onChangeText(this.props.listIndex, this.props.taskIndex, e.target.value)}
                 />
                 <br/>
                 <DatePicker
+                    id = "duedate picker"
                     autoOk = {true}
-                    defaultDate = {duedate}
+                    defaultDate = {this.props.duedate}
+                    onChange = {(event, date) => this.props.onChangeDuedate(this.props.listIndex, this.props.taskIndex, date)}
                 />
             </div>
         )
