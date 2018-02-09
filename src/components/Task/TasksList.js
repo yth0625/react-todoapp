@@ -3,29 +3,38 @@ import PropTypes from 'prop-types';
 
 import { List } from 'immutable';
 
-import Task from './Task';
+import Task from '.';
 
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-let listIndex = '';
-const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChangeText}) => {
+const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChangeText, onChangeDuedate, onCreateList}) => {
+    let AddButton;
     const TasksList = tasksList.map(
         (List, ListIndex) => {
-            if ( List.get('date') === selectDate ) {
+            if ( List.get('date').getTime() === selectDate.getTime() ) {
+                
+                AddButton = (
+                    <FloatingActionButton
+                        onClick = {() => onCreate(ListIndex)}   
+                    >
+                        <ContentAdd />
+                    </FloatingActionButton>
+                )
+
                 const tasks = List.get('tasks');
                 return tasks.map(
                     (task, i) => {
-                        listIndex = ListIndex;
                         return (
                             <Task
                                 key = {i}
-                                listIndex = {listIndex}
+                                listIndex = {ListIndex}
                                 taskIndex = {i}
                                 {...task.toJS()}
                                 onCheck = {onCheck}
                                 onRemove = {onRemove}
                                 onChangeText = {onChangeText}
+                                onChangeDuedate = {onChangeDuedate}
                             />
                         );
                     }
@@ -34,13 +43,10 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
         }
     );
 
-    const AddButton = (
-        <FloatingActionButton
-            onClick = {() => onCreate(listIndex)}    
-        >
-            <ContentAdd />
-        </FloatingActionButton>
-    )
+    if ( !AddButton ) {
+        // TODO List 생성 범위 정하기 (ex 2018 ~ 2020 년도 까지)
+        onCreateList(selectDate);
+    }
 
     return (
         <div className="TasksList">
@@ -52,21 +58,13 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
 
 TasksList.propTypes = {
     tasksList: PropTypes.instanceOf(List),
-    selectDate: PropTypes.string,
-    onCheck: PropTypes.func,
-    onCreate: PropTypes.func,
-    onRemove: PropTypes.func,
-    onChangeText: PropTypes.func
+    selectDate: PropTypes.instanceOf(Date),
+    onCheck: PropTypes.func.isRequired,
+    onCreate: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired,
+    onChangeText: PropTypes.func.isRequired,
+    onChangeDuedate: PropTypes.func.isRequired,
+    onCreateList: PropTypes.func.isRequired
 };
-
-TasksList.defaultProps = {
-    tasks: [],
-    selectDate: '',
-    onCheck: () => console.warn('onCheck not  defined'),
-    onCreate: () => console.warn('onCreate not  defined'),
-    onRemove: () => console.warn('onRemove not  defined'),
-    onChangeText: () => console.warn('onChangeText not  defined')
-};
-
 
 export default TasksList;
