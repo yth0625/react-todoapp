@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Checkbox, FloatingActionButton, TextField, DatePicker} from 'material-ui';
 import ContentRemove from 'material-ui/svg-icons/content/remove';
 
-export default class Task extends React.Component {
+export default class Task extends React.PureComponent {
     static propTypes = {
         listIndex: PropTypes.number.isRequired,
         taskIndex: PropTypes.number.isRequired,

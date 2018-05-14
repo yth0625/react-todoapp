@@ -16,33 +16,7 @@ export const selectduedate = createAction(SELECTDUEDATE); // listIndex, taskInde
 export const createlist = createAction(CREATELIST); // listIndex, date
 
 const initialState = Immutable.fromJS({
-    tasksList: [
-        {
-            date: new Date(2018, 0, 29),
-            tasks: [
-                {
-                    check: false,
-                    text: 'test',
-                    duedate: new Date()
-                },
-                {
-                    check: false,
-                    text: 'test2',
-                    duedate: new Date()
-                }
-            ],
-        },
-        {
-            date: new Date(2018, 0, 30),
-            tasks: [
-                {
-                    check: false,
-                    text: 'test',
-                    duedate: new Date()
-                }
-            ]
-        }
-    ]
+    tasksList: []
 });
 
 function setTask(state, action, changefn) {

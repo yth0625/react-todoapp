@@ -6,7 +6,7 @@ const SELECTDATE = 'datepicker/SELCETDATE';
 export const selectdate = createAction(SELECTDATE);
 
 const initialState = Map({
-    selectDate: new Date(2018, 0, 29)
+    selectDate: new Date()
 });
 
 export default  handleActions({
