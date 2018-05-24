@@ -1,6 +1,7 @@
-import Sequelize from 'sequelize';
+import db from '../index';
+import Sequelize from'sequelize';
 
-const Task = Sequelize.define('task', {
+const Task = db.define('task', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -24,15 +25,24 @@ const Task = Sequelize.define('task', {
     }
 });
 
-Task.createTask = (payload) => {
-    return Task.create(...payload);
+Task.addTask = (task) => {
+    return Task.create(task);
 };
 
-Task.editTask = (id, payload) => {
+Task.editTask = (task) => {
     return Task.update(
-        ...payload,
-        {where: id}
+        task,
+        {   where: {
+                id: task.id
+            }
+        }
     );
+};
+
+Task.removeTask = (id) => {
+    return Task.destroy({
+        where: id
+    });
 };
 
 Task.findTaskList = (date) => {
