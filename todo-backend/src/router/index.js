@@ -30,7 +30,6 @@ export default (app) => {
 
     app.post('/taskList', (req, res) => {
         const {taskdate} = req.body;
-        console.log(taskdate);
         Task.findTaskList(new Date(taskdate)).then( result => {
             res.status(200).send(result);
         }).catch( error => {

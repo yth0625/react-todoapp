@@ -1,9 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 
 import db from './database';
 import router from './router';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 router(app);
 
