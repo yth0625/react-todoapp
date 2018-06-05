@@ -12,8 +12,7 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
     let AddButton;
     const TasksList = tasksList.map(
         (List, ListIndex) => {
-            if ( List.get('date').getTime() === selectDate.getTime() ) {
-                
+            if ( List.get('date').getTime() < selectDate.getTime() ) {
                 AddButton = (
                     <FloatingActionButton
                         onClick = {() => onCreate(ListIndex)}   

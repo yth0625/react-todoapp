@@ -16,7 +16,12 @@ export const selectduedate = createAction(SELECTDUEDATE); // listIndex, taskInde
 export const createlist = createAction(CREATELIST); // listIndex, date
 
 const initialState = Immutable.fromJS({
-    tasksList: []
+    tasksList: [
+        {
+            date: new Date(),
+            tasks: []
+        }
+    ]
 });
 
 function setTask(state, action, changefn) {
@@ -35,6 +40,7 @@ function setTask(state, action, changefn) {
 
 export default handleActions({
     [CREATE]: (state, action) => {
+        console.log('create');
         return state.set('tasksList', state.get('tasksList').update(
             action.payload,
             (tasksList) => tasksList.set('tasks', tasksList.get('tasks').push(
@@ -79,6 +85,7 @@ export default handleActions({
     },
 
     [CREATELIST]: (state, action) => {
+        console.log('hello');
         return state.set('tasksList', state.get('tasksList').push(
             Map({
                 date: new Date(action.payload),
