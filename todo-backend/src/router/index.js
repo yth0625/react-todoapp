@@ -3,6 +3,13 @@ import Task from '../database/models/Task';
 export default (app) => {
     app.post('/task', (req, res) => {
         const task = req.body;
+
+        if (task.duedate === undefined)
+            task.duedate = task.taskdate;
+        
+        if (task.text === undefined)
+            task.text = '';
+        
         Task.create(task).then( result => {
             res.status(200).send(result);
         }).catch( error => {
@@ -20,9 +27,9 @@ export default (app) => {
     });
 
     app.delete('/task', (req, res) => {
-        const id = req.body;
-        Task.removeTask(id).then( result => {
-            res.status(200).send(result);
+        const taskId = req.body;
+        Task.removeTask(taskId).then( result => {
+            res.sendStatus(200).send(result);
         }).catch( error => {
             res.status(400).send(error);
         });
@@ -31,6 +38,7 @@ export default (app) => {
     app.post('/taskList', (req, res) => {
         const {taskdate} = req.body;
         Task.findTaskList(new Date(taskdate)).then( result => {
+            result.push(taskdate);
             res.status(200).send(result);
         }).catch( error => {
             res.status(400).send(error);
