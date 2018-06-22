@@ -1,5 +1,6 @@
 import TasksList from '../components/Task/TasksList';
-import * as actions from '../modules/tasks';
+import * as taskAactions from '../modules/tasks';
+import * as requestActions from '../modules/request'
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
@@ -8,12 +9,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchProps = (dispatch) => ({
-    onCheck: (listIndex, taskIndex) => dispatch(actions.oncheck({listIndex,taskIndex})),
-    onCreate: (listIndex) => dispatch(actions.create(listIndex)),
-    onRemove: (listIndex, taskIndex) => dispatch(actions.remove({listIndex, taskIndex})),
-    onChangeText: (listIndex, taskIndex, text) => dispatch(actions.writetext({listIndex, taskIndex, text})),
-    onChangeDuedate: (listIndex, taskIndex, duedate) => dispatch(actions.selectduedate({listIndex,taskIndex, duedate})),
-    onCreateList: (date) => dispatch(actions.createlist(date))
+    onChangeText: (listIndex, taskIndex, value) => dispatch(taskAactions.writetext({listIndex, taskIndex, value})),
+    createTask: (date, listIndex) => dispatch(requestActions.createTask(date, listIndex)),
+    editTask: (id, task, value, action, listIndex, taskIndex) => dispatch(requestActions.editTask(id, task, value, action, listIndex, taskIndex)),
+    removeTask: (id, listIndex, taskIndex) => dispatch(requestActions.removeTask(id, listIndex, taskIndex)),
+    getTaskList: (date) => dispatch(requestActions.getTaskList(date))
 });
 
 const TaskListContainer = connect(

@@ -7,25 +7,18 @@ const CHECK = 'tasks/CHECK';
 const WRITETEXT = 'tasks/WRITETEXT';
 const SELECTDUEDATE = 'tasks/SELECTDUEDATE';
 const CREATELIST = 'tasks/CREATELIST';
+const ADDLIST = 'tasks/ADDLIST';
 
-export const create = createAction(CREATE); // listIndex, taskIndex
+export const create = createAction(CREATE); // listIndex, id
 export const remove = createAction(REMOVE); // listIndex, taskIndex
 export const oncheck = createAction(CHECK); // listIndex, taskIndex, check 
 export const writetext = createAction(WRITETEXT); // listIndex, taskIndex, text
-export const selectduedate = createAction(SELECTDUEDATE); // listIndex, taskIndex, duedate
-export const createlist = createAction(CREATELIST); // listIndex, date
-
-const initialState = Immutable.fromJS({
-    tasksList: [
-        {
-            date: new Date(),
-            tasks: []
-        }
-    ]
-});
+export const selectduedate = createAction(SELECTDUEDATE); // listIndex, taskIndex, duedat
+export const createlist = createAction(CREATELIST); // date
+export const addlist = createAction(ADDLIST); // tasks
 
 function setTask(state, action, changefn) {
-    state = state.set('tasksList', state.get('tasksList').update(
+    const newState = state.set('tasksList', state.get('tasksList').update(
         action.payload.listIndex,
         (tasksList) => {
             const tasks = tasksList.get('tasks');
@@ -35,19 +28,23 @@ function setTask(state, action, changefn) {
             ));
         }
     ));
-    return state;
+    return newState;
 }
+
+const initialState = Immutable.fromJS({
+    tasksList: []
+});
 
 export default handleActions({
     [CREATE]: (state, action) => {
-        console.log('create');
         return state.set('tasksList', state.get('tasksList').update(
-            action.payload,
+            action.payload.listIndex,
             (tasksList) => tasksList.set('tasks', tasksList.get('tasks').push(
                 Map({
-                    check: false,
-                    text: '',
-                    duedate: new Date()
+                    id: action.payload.id,
+                    check: action.payload.check,
+                    text: action.payload.text,
+                    duedate: new Date(action.payload.duedate)
                 })
             ))
         ));
@@ -62,7 +59,7 @@ export default handleActions({
 
     [CHECK]: (state, action) => {
         const changefn = (task) => {
-            return task.set('check', !task.get('check'));
+            return task.set('check', action.payload.value);
         }
 
         return setTask(state, action, changefn);
@@ -70,7 +67,7 @@ export default handleActions({
 
     [WRITETEXT]: (state, action) => {
         const changefn = (task) => {
-            return task.set('text', action.payload.text);
+            return task.set('text', action.payload.value);
         }
 
         return setTask(state, action, changefn);
@@ -78,22 +75,32 @@ export default handleActions({
 
     [SELECTDUEDATE]: (state, action) => {
         const changefn = (task) => {
-            return task.set('duedate', action.payload.duedate)
+            return task.set('duedate', action.payload.value)
         }
 
         return setTask(state, action, changefn);
     },
 
     [CREATELIST]: (state, action) => {
-        console.log('hello');
         return state.set('tasksList', state.get('tasksList').push(
             Map({
                 date: new Date(action.payload),
                 tasks: List([
                 ])
             })
-        )
-        );
-        // TODO tasksList를 date 기준으로 sort 하기
+        ));
+    },
+
+    [ADDLIST]: (state, action) => {
+        const tasks = action.payload.tasks.map( tasks  => {
+            return Map({id: tasks.id ,'check': tasks.check, text: tasks.text, duedate: new Date(tasks.duedate)})
+        });
+        
+        return state.set('tasksList', state.get('tasksList').push(
+            Map({
+                date: new Date(action.payload.date),
+                tasks: List(tasks)
+            })
+        ));
     }
 }, initialState);

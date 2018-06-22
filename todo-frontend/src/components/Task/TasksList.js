@@ -8,16 +8,24 @@ import Task from '.';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChangeText, onChangeDuedate, onCreateList}) => {
+function dateCompare ( date1, date2 ) {
+    if ( (date1.getFullYear() === date2.getFullYear()) &&
+         (date1.getMonth() === date2.getMonth()) &&
+         (date1.getDate() === date2.getDate()) )
+        return true
+}
+
+const TasksList = ({tasksList, selectDate, onChangeText, createTask, editTask, removeTask, getTaskList}) => {
     let AddButton;
     const TasksList = tasksList.map(
         (List, ListIndex) => {
-            if ( List.get('date').getTime() < selectDate.getTime() ) {
+
+            if ( dateCompare(List.get('date'), selectDate)) {
                 AddButton = (
                     <FloatingActionButton
-                        onClick = {() => onCreate(ListIndex)}   
+                        onClick = {() => createTask(selectDate, ListIndex)}   
                     >
-                        <ContentAdd />
+                        <ContentAdd/>
                     </FloatingActionButton>
                 )
 
@@ -29,11 +37,10 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
                                 key = {i}
                                 listIndex = {ListIndex}
                                 taskIndex = {i}
-                                {...task.toJS()}
-                                onCheck = {onCheck}
-                                onRemove = {onRemove}
+                                task = {task.toJS()}
+                                onRemove = {removeTask}
                                 onChangeText = {onChangeText}
-                                onChangeDuedate = {onChangeDuedate}
+                                onEdit = {editTask}
                             />
                         );
                     }
@@ -44,7 +51,7 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
 
     if ( !AddButton ) {
         // TODO List 생성 범위 정하기 (ex 2018 ~ 2020 년도 까지)
-        onCreateList(selectDate);
+        getTaskList(selectDate);
     }
 
     return (
@@ -58,12 +65,11 @@ const TasksList = ({tasksList, selectDate, onCheck, onCreate, onRemove, onChange
 TasksList.propTypes = {
     tasksList: PropTypes.instanceOf(List),
     selectDate: PropTypes.instanceOf(Date),
-    onCheck: PropTypes.func.isRequired,
-    onCreate: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
     onChangeText: PropTypes.func.isRequired,
-    onChangeDuedate: PropTypes.func.isRequired,
-    onCreateList: PropTypes.func.isRequired
+    createTask: PropTypes.func.isRequired,
+    editTask: PropTypes.func.isRequired,
+    removeTask: PropTypes.func.isRequired,
+    getTaskList: PropTypes.func.isRequired
 };
 
 export default TasksList;

@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
 
 
 const mapDispatchProps = (dispatch) => ({
-    onChangeDate: (date) => dispatch(actions.selectdate(date)),
+    onChangeDate: (date) => dispatch(actions.selectdate(date))
 });
 
 const TaskListContainer = connect(
