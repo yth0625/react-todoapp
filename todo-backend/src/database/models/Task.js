@@ -8,16 +8,14 @@ const Task = db.define('task', {
         autoIncrement: true
     },
     text: {
-        type: Sequelize.TEXT,
-        allowNull: false
+        type: Sequelize.STRING
     },
     check: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     },
     duedate: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        type: Sequelize.DATE
     },
     taskdate: {
         type: Sequelize.DATE,
