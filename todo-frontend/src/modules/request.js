@@ -148,8 +148,7 @@ function editTaskAPI(task) {
 }
 
 function removeTaskAPI(id) {
-    return fetch(`${serverAddress}/task`, { method: 'DELETE', body: JSON.stringify({id}), headers: { 'Content-Type': 'application/json' }})
-        .then(res => res.json());
+    return fetch(`${serverAddress}/task`, { method: 'DELETE', body: JSON.stringify({id}), headers: { 'Content-Type': 'application/json' }});
 }
 
 const initalState = Immutable.fromJS({
