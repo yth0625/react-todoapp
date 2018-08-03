@@ -22,30 +22,44 @@ const GETLIST_PENDING = 'tasks/GETLIST_PENDING';
 const GETLIST_FULFILLED = 'tasks/GETLIST_FULFILLED';
 const GETLIST_REJECTED = 'tasks/GETLIST_REJECTED';
 
-export const createTask = (date, listIndex) => dispatch => {
-    dispatch({type: CREATETASK_PENDING});
+export function createTask(date, listIndex) {
+    return async dispatch => {
+        dispatch({type: CREATETASK_PENDING});
 
-    return createTaskAPI(date).then( response => {
+        let data;
+        try {
+            data = await doFetchWithResponse(`${serverAddress}/task`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate')})});
+        } catch (err) {
+            dispatch({
+                type: CREATETASK_REJECTED,
+                payload: err
+            });
+        }
+
         dispatch({
             type: CREATETASK_FULFILLED
         });
 
         dispatch({
             type: 'tasks/CREATE',
-            payload: {listIndex: listIndex, ...response}
+            payload: {listIndex: listIndex, ...data}
         });
-    }).catch( error => {
-        dispatch({
-            type: CREATETASK_REJECTED,
-            paylaod: error
-        });
-    })
-};
+    };
+} 
 
-export const removeTask = (id, listIndex, taskIndex) => dispatch => {
-    dispatch({type: REMOVETASK_PENDING});
+export function removeTask(id, listIndex, taskIndex) {
+    return async dispatch => {
+        dispatch({type: REMOVETASK_PENDING});
 
-    return removeTaskAPI(id).then( () => {
+        try {
+            await doFetchWithResponse(`${serverAddress}/task`, { method: 'DELETE', body: JSON.stringify({id})});
+        } catch (err) {
+            dispatch({
+                type: REMOVETASK_REJECTED,
+                payload: err
+            })
+        }
+
         dispatch({
             type: REMOVETASK_FULFILLED
         });
@@ -54,32 +68,37 @@ export const removeTask = (id, listIndex, taskIndex) => dispatch => {
             type: 'tasks/REMOVE',
             payload: {listIndex: listIndex, taskIndex: taskIndex}
         });
-    }).catch( error => {
-        dispatch({
-            type: REMOVETASK_REJECTED,
-            paylaod: error
-        });
-    });
+    }
 }
 
-export const editTask = (task, value, action, listIndex, taskIndex) => dispatch => {
-    dispatch({type: EDITTASK_PENDING});
+export function editTask(task, value, action, listIndex, taskIndex) {
+    return async dispatch => {
+        dispatch({type: EDITTASK_PENDING});
 
-    let data;
-    switch (action) {
-    case 'tasks/CHECK':
-        data = {...task, check: value}
-        break;
-    case 'tasks/WRITETEXT':
-        data = {...task, text: value}
-        break;
-    case 'tasks/SELECTDUEDATE':
-        data = {...task, duedate: value}
-        break;
-    }
+        let reqBody;
+        switch (action) {
+        case 'tasks/CHECK':
+            reqBody = {...task, check: value}
+            break;
+        case 'tasks/WRITETEXT':
+            reqBody = {...task, text: value}
+            break;
+        case 'tasks/SELECTDUEDATE':
+            reqBody = {...task, duedate: value}
+            break;
+        }
+        
+        let data;
+        try {
+            data = await doFetchWithResponse(`${serverAddress}/task`, { method: 'PUT', body: JSON.stringify(reqBody)});
+        } catch (err) {
+            dispatch({
+                type: EDITTASK_REJECTED,
+                payload: err
+            });
+        }
 
-    return editTaskAPI(data).then( response => {
-        if ( response ) {
+        if (data) {
             dispatch({
                 type: action,
                 payload: {listIndex: listIndex, taskIndex: taskIndex, value: value}
@@ -88,67 +107,63 @@ export const editTask = (task, value, action, listIndex, taskIndex) => dispatch 
             dispatch({
                 type: EDITTASK_FULFILLED
             });
-        } else 
+        } else {
             dispatch({
                 type: EDITTASK_REJECTED,
                 payload: 'fail...'
             });
-    }).catch( error  => {
-        dispatch({
-            type: EDITTASK_REJECTED,
-            payload: error
-        });
-    });
+        }
+    }
 }
 
-export const getTaskList = (date) => dispatch => {
-    dispatch({type: GETLIST_PENDING});
+export function getTaskList(date, userId) {
+    return async dispatch => {
+        dispatch({type: GETLIST_PENDING});
+        
+        let data;
+        try {
+            data = await doFetchWithResponse(`${serverAddress}/taskList`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate'), userId: userId})});
+        } catch (err) {
+            dispatch({
+                type: GETLIST_REJECTED,
+                payload: err
+            });
+        }
 
-    return getTaskListAPI(date).then( response => {
-        const date = response.pop();
+        const taskdate = data.pop();
 
-        if ( response.length == 0 ) {
+        if ( data.length == 0 ) {
             dispatch({
                 type: 'tasks/CREATELIST',
-                payload: date
+                payload: taskdate
             });
-
         } else {
             dispatch({
                 type: 'tasks/ADDLIST',
-                payload: {date: date, tasks: response}
+                payload: {date: taskdate, tasks: data}
             });
         }
 
         dispatch({
             type: GETLIST_FULFILLED
         });
-        
-    }).catch( error => {
-        dispatch({
-            type: GETLIST_REJECTED,
-            payload: error
-        });
-    });
+    }
 }
 
-function createTaskAPI(date) {
-    return fetch(`${serverAddress}/task`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate')}), headers: { 'Content-Type': 'application/json' }})
-        .then(res => res.json());
-}
+async function doFetchWithResponse (url, options) {
+    const response = await fetch(url, {...options, headers: { 'Content-Type': 'application/json' }});
+    let data;
 
-function getTaskListAPI(date) {
-    return fetch(`${serverAddress}/taskList`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate')}), headers: { 'Content-Type': 'application/json' }})
-        .then(res => res.json());
-}
+    try {
+        data = await response.json();
+    } catch (err) {
+        return  new Error(err);
+    }
 
-function editTaskAPI(task) {
-    return fetch(`${serverAddress}/task`, { method: 'PUT', body: JSON.stringify(task), headers: { 'Content-Type': 'application/json' }})
-        .then(res => res.json());
-}
+    if (response.ok)
+        return data;
 
-function removeTaskAPI(id) {
-    return fetch(`${serverAddress}/task`, { method: 'DELETE', body: JSON.stringify({id}), headers: { 'Content-Type': 'application/json' }});
+    throw {errors: data.errors[0]};
 }
 
 const initalState = Immutable.fromJS({
