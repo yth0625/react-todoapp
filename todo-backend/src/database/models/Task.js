@@ -20,6 +20,10 @@ const Task = db.define('task', {
     taskdate: {
         type: Sequelize.DATE,
         allowNull: false    
+    },
+    userid: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 });
 
@@ -43,12 +47,14 @@ Task.removeTask = (id) => {
     });
 };
 
-Task.findTaskList = (date) => {
+Task.findTaskList = (date, id) => {
     return Task.findAll({
         where: {
             taskdate: date
         }
     });
 };
+
+Task.sync();
 
 export default Task;
