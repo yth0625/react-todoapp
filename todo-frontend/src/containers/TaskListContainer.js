@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
     tasksList: state.taskStorage.get('tasksList'),
-    selectDate: state.datePickerStorage.get('selectDate')
+    selectDate: state.datePickerStorage.get('selectDate'),
+    userId: state.userStorage.get('userId')
 });
 
 const mapDispatchProps = (dispatch) => ({
@@ -13,7 +14,7 @@ const mapDispatchProps = (dispatch) => ({
     createTask: (date, listIndex) => dispatch(requestActions.createTask(date, listIndex)),
     editTask: (id, task, value, action, listIndex, taskIndex) => dispatch(requestActions.editTask(id, task, value, action, listIndex, taskIndex)),
     removeTask: (id, listIndex, taskIndex) => dispatch(requestActions.removeTask(id, listIndex, taskIndex)),
-    getTaskList: (date) => dispatch(requestActions.getTaskList(date))
+    getTaskList: (date, id) => dispatch(requestActions.getTaskList(date, id))
 });
 
 const TaskListContainer = connect(

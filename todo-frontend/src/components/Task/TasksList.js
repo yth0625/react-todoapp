@@ -15,7 +15,7 @@ function dateCompare ( date1, date2 ) {
         return true
 }
 
-const TasksList = ({tasksList, selectDate, onChangeText, createTask, editTask, removeTask, getTaskList}) => {
+const TasksList = ({tasksList, selectDate, userId, onChangeText, createTask, editTask, removeTask, getTaskList}) => {
     let AddButton;
     const TasksList = tasksList.map(
         (List, ListIndex) => {
@@ -51,7 +51,7 @@ const TasksList = ({tasksList, selectDate, onChangeText, createTask, editTask, r
 
     if ( !AddButton ) {
         // TODO List 생성 범위 정하기 (ex 2018 ~ 2020 년도 까지)
-        getTaskList(selectDate);
+        getTaskList(selectDate, userId);
     }
 
     return (
@@ -65,6 +65,7 @@ const TasksList = ({tasksList, selectDate, onChangeText, createTask, editTask, r
 TasksList.propTypes = {
     tasksList: PropTypes.instanceOf(List),
     selectDate: PropTypes.instanceOf(Date),
+    userId: PropTypes.string,
     onChangeText: PropTypes.func.isRequired,
     createTask: PropTypes.func.isRequired,
     editTask: PropTypes.func.isRequired,
