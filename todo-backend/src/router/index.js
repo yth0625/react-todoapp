@@ -3,17 +3,10 @@ import User from '../database/models/User';
 
 export default (app) => {
     app.post('/task', (req, res) => {
-        const task = req.body;
+        const {task} = req.body;
+        const {userid} = req.body;
 
-        if (task.duedate === undefined)
-            task.duedate = task.taskdate;
-        
-        if (task.text === undefined)
-            task.text = '';
-
-        task.userid = 'asdf';
-
-        Task.create(task).then( result => {
+        Task.addTask(task, userid).then( result => {
             res.status(200).send(result);
         }).catch( error => {
             res.status(400).send(error);
@@ -41,8 +34,8 @@ export default (app) => {
 
     app.post('/taskList', (req, res) => {
         const {taskdate} = req.body;
-        //const {userId} = req.body;
-        Task.findTaskList(new Date(taskdate)).then( result => {
+        const {userId} = req.body;
+        Task.findTaskList(new Date(taskdate), userId).then( result => {
             result.push(taskdate);
             res.status(200).send(result);
         }).catch( error => {

@@ -1,6 +1,9 @@
 import db from '../index';
 import Sequelize from 'sequelize';
 
+import uuid from 'uuid/v4';
+import bcrypt from 'bcrypt';
+
 const User = db.define('user', {
     id: {
         type: Sequelize.STRING,
@@ -17,7 +20,17 @@ const User = db.define('user', {
     }
 });
 
-User.createUser = (user) => {
+User.createUser = async (user) => {
+    user.id = uuid();
+    
+    const salt = await bcrypt.genSalt(10).then( salt => {
+        return salt;
+    });
+
+    await bcrypt.hash(user.password, salt).then( hash => {
+        user.password = hash;
+    });
+
     return User.create(user);
 };
 
@@ -45,6 +58,6 @@ User.findUser = (id) => {
     });
 };
 
-User.sync({force:true});
+User.sync();
 
 export default User;

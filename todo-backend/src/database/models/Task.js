@@ -27,7 +27,15 @@ const Task = db.define('task', {
     }
 });
 
-Task.addTask = (task) => {
+Task.addTask = (task, usreid) => {
+    if (task.duedate === undefined)
+        task.duedate = task.taskdate;
+        
+    if (task.text === undefined)
+        task.text = '';
+
+    task.userid = usreid;
+    
     return Task.create(task);
 };
 
@@ -50,7 +58,8 @@ Task.removeTask = (id) => {
 Task.findTaskList = (date, id) => {
     return Task.findAll({
         where: {
-            taskdate: date
+            taskdate: date,
+            userid: id
         }
     });
 };
