@@ -4,6 +4,8 @@ import Immutable from 'immutable';
 import fetch from 'node-fetch';
 import dateformat from 'dateformat';
 
+import * as taskAactions from './tasks';
+
 const serverAddress =  process.env['TODO_SERVER'] || 'http://localhost:5556';
 
 const CREATETASK_PENDING = 'tasks/CREATETASK_PENDING';
@@ -40,10 +42,7 @@ export function createTask(date, listIndex) {
             type: CREATETASK_FULFILLED
         });
 
-        dispatch({
-            type: 'tasks/CREATE',
-            payload: {listIndex: listIndex, ...data}
-        });
+        dispatch(taskAactions.create({listIndex: listIndex, ...data}));
     };
 } 
 
@@ -64,10 +63,7 @@ export function removeTask(id, listIndex, taskIndex) {
             type: REMOVETASK_FULFILLED
         });
         
-        dispatch({
-            type: 'tasks/REMOVE',
-            payload: {listIndex: listIndex, taskIndex: taskIndex}
-        });
+        dispatch(taskAactions.remove({listIndex: listIndex, taskIndex: taskIndex}));
     }
 }
 
@@ -77,13 +73,13 @@ export function editTask(task, value, action, listIndex, taskIndex) {
 
         let reqBody;
         switch (action) {
-        case 'tasks/CHECK':
+        case taskAactions.oncheck:
             reqBody = {...task, check: value}
             break;
-        case 'tasks/WRITETEXT':
+        case taskAactions.writetext:
             reqBody = {...task, text: value}
             break;
-        case 'tasks/SELECTDUEDATE':
+        case taskAactions.selectduedate:
             reqBody = {...task, duedate: value}
             break;
         }
@@ -116,13 +112,13 @@ export function editTask(task, value, action, listIndex, taskIndex) {
     }
 }
 
-export function getTaskList(date, userId) {
+export function getTaskList(date, id) {
     return async dispatch => {
         dispatch({type: GETLIST_PENDING});
         
         let data;
         try {
-            data = await doFetchWithResponse(`${serverAddress}/taskList`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate'), userId: userId})});
+            data = await doFetchWithResponse(`${serverAddress}/taskList`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate'), userId: id})});
         } catch (err) {
             dispatch({
                 type: GETLIST_REJECTED,
@@ -132,17 +128,10 @@ export function getTaskList(date, userId) {
 
         const taskdate = data.pop();
 
-        if ( data.length == 0 ) {
-            dispatch({
-                type: 'tasks/CREATELIST',
-                payload: taskdate
-            });
-        } else {
-            dispatch({
-                type: 'tasks/ADDLIST',
-                payload: {date: taskdate, tasks: data}
-            });
-        }
+        if ( data.length == 0 ) 
+            dispatch(taskAactions.createlist(taskdate));
+        else
+            dispatch(taskAactions.addlist({date: taskdate, tasks: data}));
 
         dispatch({
             type: GETLIST_FULFILLED
