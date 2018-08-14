@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchProps = (dispatch) => ({
     onChangeText: (listIndex, taskIndex, value) => dispatch(taskActions.writetext({listIndex, taskIndex, value})),
-    createTask: (date, listIndex) => dispatch(requestActions.createTask(date, listIndex)),
+    createTask: (date, userId, listIndex) => dispatch(requestActions.createTask(date, userId, listIndex)),
     editTask: (id, task, value, action, listIndex, taskIndex) => dispatch(requestActions.editTask(id, task, value, action, listIndex, taskIndex)),
     removeTask: (id, listIndex, taskIndex) => dispatch(requestActions.removeTask(id, listIndex, taskIndex)),
     getTaskList: (date, id) => dispatch(requestActions.getTaskList(date, id))

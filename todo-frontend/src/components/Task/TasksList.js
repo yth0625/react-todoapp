@@ -23,7 +23,7 @@ const TasksList = ({tasksList, selectDate, userId, onChangeText, createTask, edi
             if ( dateCompare(List.get('date'), selectDate)) {
                 AddButton = (
                     <FloatingActionButton
-                        onClick = {() => createTask(selectDate, ListIndex)}   
+                        onClick = {() => createTask(selectDate, userId, ListIndex)}   
                     >
                         <ContentAdd/>
                     </FloatingActionButton>

@@ -27,14 +27,14 @@ const Task = db.define('task', {
     }
 });
 
-Task.addTask = (task, usreid) => {
+Task.addTask = (task, userid) => {
     if (task.duedate === undefined)
         task.duedate = task.taskdate;
         
     if (task.text === undefined)
         task.text = '';
 
-    task.userid = usreid;
+    task.userid = userid;
     
     return Task.create(task);
 };

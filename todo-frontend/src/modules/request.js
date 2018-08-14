@@ -24,13 +24,18 @@ const GETLIST_PENDING = 'tasks/GETLIST_PENDING';
 const GETLIST_FULFILLED = 'tasks/GETLIST_FULFILLED';
 const GETLIST_REJECTED = 'tasks/GETLIST_REJECTED';
 
-export function createTask(date, listIndex) {
+export function createTask(date, userId, listIndex) {
     return async dispatch => {
         dispatch({type: CREATETASK_PENDING});
 
+        const body = JSON.stringify({
+            task: {taskdate: dateformat(date, 'isoDate')},
+            userid: userId
+        });
+
         let data;
         try {
-            data = await doFetchWithResponse(`${serverAddress}/task`, { method: 'POST', body: JSON.stringify({taskdate: dateformat(date, 'isoDate')})});
+            data = await doFetchWithResponse(`${serverAddress}/task`, { method: 'POST', body: body});
         } catch (err) {
             dispatch({
                 type: CREATETASK_REJECTED,
@@ -42,6 +47,7 @@ export function createTask(date, listIndex) {
             type: CREATETASK_FULFILLED
         });
 
+        console.log(data);
         dispatch(taskAactions.create({listIndex: listIndex, ...data}));
     };
 } 
@@ -71,6 +77,9 @@ export function editTask(task, value, action, listIndex, taskIndex) {
     return async dispatch => {
         dispatch({type: EDITTASK_PENDING});
 
+        console.log(task);
+        console.log(action);
+    
         let reqBody;
         switch (action) {
         case taskAactions.oncheck:
