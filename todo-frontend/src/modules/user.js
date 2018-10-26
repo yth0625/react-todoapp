@@ -6,7 +6,7 @@ const LOGIN = 'user/login';
 export const login = createAction(LOGIN); // id, password
 
 const initalState = Immutable.fromJS({
-    userId: '2f730e00-8bb1-4739-bca4-8276a89b7eb0'
+    userId: ''
 });
 
 export default handleActions({
