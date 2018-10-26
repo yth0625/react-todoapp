@@ -5,6 +5,7 @@ import fetch from 'node-fetch';
 import dateformat from 'dateformat';
 
 import * as taskAactions from './tasks';
+import * as userActiions from './user';
 
 const serverAddress =  process.env['TODO_SERVER'] || 'http://localhost:5556';
 
@@ -24,6 +25,14 @@ const GETLIST_PENDING = 'tasks/GETLIST_PENDING';
 const GETLIST_FULFILLED = 'tasks/GETLIST_FULFILLED';
 const GETLIST_REJECTED = 'tasks/GETLIST_REJECTED';
 
+const LOGIN_PENDING = 'user/LOGIN_PENDING';
+const LOGIN_FULFILLED = 'user/LOGIN_FULFILLED';
+const LOGIN_REJECTED = 'user/LOGIN_REJECTED';
+
+const SIGNUP_PENDING = 'user/SIGNUP_PENDING';
+const SIGNUP_FULFILLED = 'user/SIGNUP_FULFILLED';
+const SIGNUP_REJECTED = 'user/SIGNUP_REJECTED';
+
 export function createTask(date, userId, listIndex) {
     return async dispatch => {
         dispatch({type: CREATETASK_PENDING});
@@ -41,13 +50,13 @@ export function createTask(date, userId, listIndex) {
                 type: CREATETASK_REJECTED,
                 payload: err
             });
+            return;
         }
 
         dispatch({
             type: CREATETASK_FULFILLED
         });
 
-        console.log(data);
         dispatch(taskAactions.create({listIndex: listIndex, ...data}));
     };
 } 
@@ -63,6 +72,7 @@ export function removeTask(id, listIndex, taskIndex) {
                 type: REMOVETASK_REJECTED,
                 payload: err
             })
+            return;
         }
 
         dispatch({
@@ -77,25 +87,21 @@ export function editTask(task, value, action, listIndex, taskIndex) {
     return async dispatch => {
         dispatch({type: EDITTASK_PENDING});
 
-        console.log(task);
-        console.log(action);
-    
         let reqBody;
         switch (action) {
-        case taskAactions.oncheck:
+        case 'tasks/CHECK':
             reqBody = {...task, check: value}
             break;
-        case taskAactions.writetext:
+        case 'tasks/WRITETEXT':
             reqBody = {...task, text: value}
             break;
-        case taskAactions.selectduedate:
+        case 'tasks/SELECTDUEDATE':
             reqBody = {...task, duedate: value}
             break;
         }
-        
-        let data;
+    
         try {
-            data = await doFetchWithResponse(`${serverAddress}/task`, { method: 'PUT', body: JSON.stringify(reqBody)});
+            await doFetchWithResponse(`${serverAddress}/task`, { method: 'PUT', body: JSON.stringify(reqBody)});
         } catch (err) {
             dispatch({
                 type: EDITTASK_REJECTED,
@@ -103,21 +109,14 @@ export function editTask(task, value, action, listIndex, taskIndex) {
             });
         }
 
-        if (data) {
-            dispatch({
-                type: action,
-                payload: {listIndex: listIndex, taskIndex: taskIndex, value: value}
-            });
+        dispatch({
+            type: action,
+            payload: {listIndex: listIndex, taskIndex: taskIndex, value: value}
+        });
 
-            dispatch({
-                type: EDITTASK_FULFILLED
-            });
-        } else {
-            dispatch({
-                type: EDITTASK_REJECTED,
-                payload: 'fail...'
-            });
-        }
+        dispatch({
+            type: EDITTASK_FULFILLED
+        });
     }
 }
 
@@ -133,6 +132,7 @@ export function getTaskList(date, id) {
                 type: GETLIST_REJECTED,
                 payload: err
             });
+            return;
         }
 
         const taskdate = data.pop();
@@ -147,6 +147,50 @@ export function getTaskList(date, id) {
         });
     }
 }
+
+export function logIn (username, password) {
+    return async dispatch => {
+        dispatch({type: LOGIN_PENDING});
+
+        let data;
+        try {
+            data = await doFetchWithResponse(`${serverAddress}/login`, { method: 'POST', body: JSON.stringify({username: username, password: password})});
+        } catch (err) {
+            dispatch({
+                type: LOGIN_REJECTED,
+                payload: err
+            });
+            return;
+        }
+
+        document.cookie = `userId=${data.id}; expires=${new Date()}`;
+
+        dispatch({type: LOGIN_FULFILLED});
+        dispatch(userActiions.login(data.id));
+
+        return true;
+    }
+}
+
+export function signUp(username, password) {
+    return async dispatch => {
+        dispatch({type: SIGNUP_PENDING});
+
+        try {
+            await doFetchWithResponse(`${serverAddress}/user`, { method: 'POST', body: JSON.stringify({username: username, password: password})});
+        } catch (err) {
+            dispatch({
+                type: SIGNUP_REJECTED
+            });
+
+            throw {err}
+        }
+
+        dispatch({SIGNUP_FULFILLED});
+        return true;
+    }
+}
+
 
 async function doFetchWithResponse (url, options) {
     const response = await fetch(url, {...options, headers: { 'Content-Type': 'application/json' }});
