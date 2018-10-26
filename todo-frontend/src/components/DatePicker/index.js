@@ -3,12 +3,24 @@ import PropTypes from 'prop-types';
 
 import { DatePicker } from 'material-ui';
 
-const Datepicker = ({selectDate, onChangeDate}) => {
+const Datepicker = ({parameterString, currentDate, onChangeDate}) => {
+    let defaultDate;
+
+    const parameterDate = new Date(parameterString);
+
+    if ( isNaN(parameterDate) ) {
+        defaultDate = currentDate;
+    } 
+    else if ( parameterDate.getTime() !== currentDate.getTime() ) {
+        defaultDate = new Date(parameterDate);
+        onChangeDate(defaultDate);
+    }
+
     return (
         <div>
-            selectDate <DatePicker
+                selectDate <DatePicker
                 id = "date picker"
-                defaultDate = {selectDate}
+                defaultDate = {defaultDate}
                 onChange = {(event, date) => onChangeDate(date)}
             />
         </div>
@@ -16,7 +28,8 @@ const Datepicker = ({selectDate, onChangeDate}) => {
 }
 
 Datepicker.propTypes = {
-    selectDate: PropTypes.instanceOf(Date),
+    parameterString: PropTypes.string,
+    currentDate: PropTypes.instanceOf(Date),
     onChangeDate : PropTypes.func.isRequired
 };
 

@@ -3,7 +3,7 @@ import * as actions from '../modules/datepicker';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
-    selectDate: state.datePickerStorage.get('selectDate')
+    currentDate: state.datePickerStorage.get('selectDate')
 });
 
 
