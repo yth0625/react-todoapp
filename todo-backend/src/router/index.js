@@ -1,6 +1,8 @@
 import Task from '../database/models/Task';
 import User from '../database/models/User';
 
+//TODO: DB 에서 error 시 응답 코드 및 응답 메시지
+
 export default (app) => {
     app.post('/task', (req, res) => {
         const {task} = req.body;
@@ -25,7 +27,6 @@ export default (app) => {
     app.delete('/task', (req, res) => {
         const taskId = req.body;
         Task.removeTask(taskId).then( () => {
-            //TODO: json 붙혀서 리스폰스 보내기
             res.status(200).json('Delete Complete!');
         }).catch( error => {
             res.status(400).send(error);
@@ -76,6 +77,18 @@ export default (app) => {
             res.status(200).send(result);
         }).catch( error => {
             res.status(400).send(error);
+        });
+    });
+
+    app.post('/login', (req, res) => {
+        const username = req.body.username;
+        const password = req.body.password;
+
+        User.login(username, password).then( result => {
+            res.status(200).send(JSON.stringify(result));
+        }).catch( error => {
+            console.log(error);
+            res.status(error.code).send(error.message);
         });
     });
 };

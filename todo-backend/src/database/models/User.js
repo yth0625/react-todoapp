@@ -12,7 +12,8 @@ const User = db.define('user', {
     },
     username: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: Sequelize.STRING,
@@ -20,7 +21,11 @@ const User = db.define('user', {
     }
 });
 
+User.sync({force: true});
+
 User.createUser = async (user) => {
+    if ( user.username == '' || user.password == '')
+        throw {error: {code: 403, message: '유저네임 혹은 패스워드가 비어있습니다.'}};
     user.id = uuid();
     
     const salt = await bcrypt.genSalt(10).then( salt => {
@@ -50,6 +55,34 @@ User.deleteUser = (id) => {
     });
 };
 
+User.login = async (username, password)  => {
+
+    // const salt = await bcrypt.genSalt(10).then( salt => {
+    //     return salt;
+    // });
+
+    // await bcrypt.hash(password, salt).then( hash => {
+    //     password = hash;
+    // });
+
+    const data = await User.findAll({
+        where: {
+            username: username
+        }
+    });
+
+    const user = data.pop().dataValues;
+
+    const match = await bcrypt.compare(password, user.password);
+
+    delete user.password;
+
+    if (match)
+        return user;
+    else 
+        throw {error: {code: 401, message: '입력된 계정과 일치하는 사용자 정보를 찾을 수 없습니다.'}};
+}
+
 User.findUser = (id) => {
     return User.findAll({
         where: {
@@ -57,7 +90,5 @@ User.findUser = (id) => {
         }
     });
 };
-
-User.sync();
 
 export default User;
