@@ -8,69 +8,80 @@ import Task from '.';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
-function dateCompare ( date1, date2 ) {
+import { startSessionCheck, getCookie } from '../../utills/Utill';
+
+function dateCompare ( date1, date2 ) { 
     if ( (date1.getFullYear() === date2.getFullYear()) &&
          (date1.getMonth() === date2.getMonth()) &&
          (date1.getDate() === date2.getDate()) )
         return true
 }
 
-const TasksList = ({tasksList, selectDate, userId, onChangeText, createTask, editTask, removeTask, getTaskList}) => {
-    let AddButton;
-    const TasksList = tasksList.map(
-        (List, ListIndex) => {
+export default class TaskList extends React.PureComponent {
+    static propTypes = {
+        tasksList: PropTypes.instanceOf(List),
+        selectDate: PropTypes.instanceOf(Date),
+        userId: PropTypes.string,
+        onChangeText: PropTypes.func.isRequired,
+        createTask: PropTypes.func.isRequired,
+        editTask: PropTypes.func.isRequired,
+        removeTask: PropTypes.func.isRequired,
+        getTaskList: PropTypes.func.isRequired,
+        login: PropTypes.func.isRequired
+    };
 
-            if ( dateCompare(List.get('date'), selectDate)) {
-                AddButton = (
-                    <FloatingActionButton
-                        onClick = {() => createTask(selectDate, userId, ListIndex)}   
-                    >
-                        <ContentAdd/>
-                    </FloatingActionButton>
-                )
+    constructor(props) {
+        super(props);
+        if ( this.props.userId === '')
+            this.props.login(getCookie('userId'));
 
-                const tasks = List.get('tasks');
-                return tasks.map(
-                    (task, i) => {
-                        return (
-                            <Task
-                                key = {i}
-                                listIndex = {ListIndex}
-                                taskIndex = {i}
-                                task = {task.toJS()}
-                                onRemove = {removeTask}
-                                onChangeText = {onChangeText}
-                                onEdit = {editTask}
-                            />
-                        );
-                    }
-                );
-            }
-        }
-    );
-
-    if ( !AddButton ) {
-        // TODO List 생성 범위 정하기 (ex 2018 ~ 2020 년도 까지)
-        getTaskList(selectDate, userId);
+        startSessionCheck();
     }
 
-    return (
-        <div className="TasksList">
-            {TasksList}
-            {AddButton}
-        </div>
-    );
-};
+    render () {
+        let AddButton;
+        const TasksList = this.props.tasksList.map(
+            (List, ListIndex) => {
 
-TasksList.propTypes = {
-    tasksList: PropTypes.instanceOf(List),
-    selectDate: PropTypes.instanceOf(Date),
-    userId: PropTypes.string,
-    onChangeText: PropTypes.func.isRequired,
-    createTask: PropTypes.func.isRequired,
-    editTask: PropTypes.func.isRequired,
-    removeTask: PropTypes.func.isRequired,
-    getTaskList: PropTypes.func.isRequired
-};
+                if ( dateCompare(List.get('date'), this.props.selectDate)) {
+                    AddButton = (
+                        <FloatingActionButton
+                            onClick = {() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}   
+                        >
+                            <ContentAdd/>
+                        </FloatingActionButton>
+                    )
 
-export default TasksList;
+                    const tasks = List.get('tasks');
+                    return tasks.map(
+                        (task, i) => {
+                            return (
+                                <Task
+                                    key = {i}
+                                    listIndex = {ListIndex}
+                                    taskIndex = {i}
+                                    task = {task.toJS()}
+                                    onRemove = {this.props.removeTask}
+                                    onChangeText = {this.props.onChangeText}
+                                    onEdit = {this.props.editTask}
+                                />
+                            );
+                        }
+                    );
+                }
+            }
+        );
+
+        if ( !AddButton ) {
+            // TODO List 생성 범위 정하기 (ex 2018 ~ 2020 년도 까지)
+            this.props.getTaskList(this.props.selectDate, this.props.userId);
+        }
+
+        return (
+            <div className="TasksList">
+                {TasksList}
+                {AddButton}
+            </div>
+        );
+    }
+}
