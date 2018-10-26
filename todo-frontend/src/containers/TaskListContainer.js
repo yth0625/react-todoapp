@@ -1,6 +1,7 @@
 import TasksList from '../components/Task/TasksList';
 import * as taskActions from '../modules/tasks';
 import * as requestActions from '../modules/request'
+import * as userActions from '../modules/user';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
@@ -14,7 +15,8 @@ const mapDispatchProps = (dispatch) => ({
     createTask: (date, userId, listIndex) => dispatch(requestActions.createTask(date, userId, listIndex)),
     editTask: (id, task, value, action, listIndex, taskIndex) => dispatch(requestActions.editTask(id, task, value, action, listIndex, taskIndex)),
     removeTask: (id, listIndex, taskIndex) => dispatch(requestActions.removeTask(id, listIndex, taskIndex)),
-    getTaskList: (date, id) => dispatch(requestActions.getTaskList(date, id))
+    getTaskList: (date, id) => dispatch(requestActions.getTaskList(date, id)),
+    login: (userId) => dispatch(userActions.login(userId))
 });
 
 const TaskListContainer = connect(
