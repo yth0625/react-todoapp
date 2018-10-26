@@ -27,6 +27,8 @@ const Task = db.define('task', {
     }
 });
 
+Task.sync();
+
 Task.addTask = (task, userid) => {
     if (task.duedate === undefined)
         task.duedate = task.taskdate;
@@ -63,7 +65,5 @@ Task.findTaskList = (date, id) => {
         }
     });
 };
-
-Task.sync();
 
 export default Task;
