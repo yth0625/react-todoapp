@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import Immutable from 'immutable';
+import Immutable, { Map } from 'immutable';
 
 import fetch from 'node-fetch';
 import dateformat from 'dateformat';
@@ -162,13 +162,10 @@ export function logIn (username, password) {
             });
             return;
         }
-
         document.cookie = `userId=${data.id}; expires=${new Date()}`;
 
         dispatch({type: LOGIN_FULFILLED});
         dispatch(userActiions.login(data.id));
-
-        return true;
     }
 }
 
@@ -179,15 +176,15 @@ export function signUp(username, password) {
         try {
             await doFetchWithResponse(`${serverAddress}/user`, { method: 'POST', body: JSON.stringify({username: username, password: password})});
         } catch (err) {
+            console.log(err);
             dispatch({
-                type: SIGNUP_REJECTED
+                type: SIGNUP_REJECTED,
+                paylaod: err.errors.type
             });
-
-            throw {err}
+            return;
         }
 
         dispatch({SIGNUP_FULFILLED});
-        return true;
     }
 }
 
@@ -211,70 +208,102 @@ async function doFetchWithResponse (url, options) {
 const initalState = Immutable.fromJS({
     requests: {
         createTask : {
-            pending: false,
-            error: false
+            status: 'not_started',
+            error: null
         },
         editTask : {
-            pending: false,
-            error: false
+            status: 'not_started',
+            error: null
         },
         removeTask: {
-            pending: false,
-            error: false
+            status: 'not_started',
+            error: null
         },
         getList: {
-            pending: false,
-            error: false
+            status: 'not_started',
+            error: null
+        },
+        login: {
+            status: 'not_started',
+            error: null
+        },
+        signUp: {
+            status: 'not_started',
+            error: null
         }
     }
 });
 
 export default handleActions({
     [CREATETASK_PENDING]: (state) => {
-        return state.setIn(['requests', 'createTask'], {pending: true, error: false});
+        return state.setIn(['requests', 'createTask'], Map({status: 'started', error: null}));
     },
 
     [CREATETASK_FULFILLED]: (state) => {
-        return state.setIn(['requests', 'createTask'], {pending: false, error: false});
+        return state.setIn(['requests', 'createTask'], Map({status: 'fulfilled', error: null}));
     },
 
-    [CREATETASK_REJECTED]: (state) => {
-        return state.setIn(['requests', 'createTask'], {pending: false, error: true});
+    [CREATETASK_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'createTask'], Map({status: 'rejected', error: action.payload}));
     },
 
     [EDITTASK_PENDING]: (state) => {
-        return state.setIn(['requests', 'editTask'], {pending: true, error: false});
+        return state.setIn(['requests', 'editTask'], Map({status: 'started', error: null}));
     },
 
     [EDITTASK_FULFILLED]: (state) => {
-        return state.setIn(['requests', 'editTask'], {pending: false, error: false});
+        return state.setIn(['requests', 'editTask'], Map({status: 'fulfilled', error: null}));
     },
 
-    [EDITTASK_REJECTED]: (state) => {
-        return state.setIn(['requests', 'editTask'], {pending: false, error: true});
+    [EDITTASK_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'editTask'], Map({status: 'rejected', error: action.payload}));
     },
 
     [REMOVETASK_PENDING]: (state) => {
-        return state.setIn(['requests', 'removeTask'], {pending: true, error: false});
+        return state.setIn(['requests', 'removeTask'], Map({status: 'started', error: null}));
     },
 
     [REMOVETASK_FULFILLED]: (state) => {
-        return state.setIn(['requests', 'removeTask'], {pending: false, error: false});
+        return state.setIn(['requests', 'removeTask'], Map({status: 'fulfilled', error: null}));
     },
 
-    [REMOVETASK_REJECTED]: (state) => {
-        return state.setIn(['requests', 'removeTask'], {pending: false, error: true});
+    [REMOVETASK_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'removeTask'], Map({status: 'rejected', error: action.payload}));
     },
 
     [GETLIST_PENDING]: (state) => {
-        return state.setIn(['requests', 'getList'], {pending: true, error: false});
+        return state.setIn(['requests', 'getList'], Map({status: 'started', error: null}));
     },
 
     [GETLIST_FULFILLED]: (state) => {
-        return state.setIn(['requests', 'getList'], {pending: false, error: false});
+        return state.setIn(['requests', 'getList'], Map({status: 'fulfilled', error: null}));
     },
 
-    [GETLIST_REJECTED]: (state) => {
-        return state.setIn(['requests', 'getList'], {pending: false, error: true});
+    [GETLIST_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'getList'], Map({status: 'rejected', error: action.payload}));
+    },
+
+    [LOGIN_PENDING]: (state) => {
+        return state.setIn(['requests', 'getList'], Map({status: 'started', error: null}));
+    },
+
+    [LOGIN_FULFILLED]: (state) => {
+        return state.setIn(['requests', 'getList'], Map({status: 'fulfilled', error: null}));
+    },
+
+    [LOGIN_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'getList'], Map({status: 'rejected', error: action.payload}));
+    },
+
+    [SIGNUP_PENDING]: (state) => {
+        return state.setIn(['requests', 'signUp'], Map({status: 'started', error: null}));
+    },
+
+    [SIGNUP_FULFILLED]: (state) => {
+        return state.setIn(['requests', 'signUp'], Map({status: 'fulfilled', error: null}));
+    },
+
+    [SIGNUP_REJECTED]: (state, action) => {
+        return state.setIn(['requests', 'signUp'], Map({status: 'rejected', error: action.payload}));
     }
 }, initalState);
