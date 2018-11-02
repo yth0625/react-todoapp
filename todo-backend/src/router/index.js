@@ -83,12 +83,11 @@ export default (app) => {
     app.post('/login', (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
-
+    
         User.login(username, password).then( result => {
-            res.status(200).send(JSON.stringify(result));
+            res.status(200).send(result);
         }).catch( error => {
-            console.log(error);
-            res.status(error.code).send(error.message);
+            res.status(error.code).send({errors: [error.message]});
         });
     });
 };
