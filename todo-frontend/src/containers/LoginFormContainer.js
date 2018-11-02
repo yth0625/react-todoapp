@@ -3,7 +3,8 @@ import * as requestActions from '../modules/request'
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
-    userId: state.userStorage.get('userId')
+    userId: state.userStorage.get('userId'),
+    logInRequest: state.requestsStorage.getIn(['requests', 'logIn']).toJS()
 });
 
 const mapDispatchProps = (dispatch) => ({

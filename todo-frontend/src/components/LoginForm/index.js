@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import { getCookie, browserHistory } from '../../utills/Utill';
 
-export default class LoginForm extends React.PureComponent {
+export default class LoginForm extends React.Component {
     static propTypes = {
         userId: PropTypes.string,
-        logIn: PropTypes.func.isRequired,
-        history: PropTypes.object
+        logInRequest: PropTypes.instanceOf(Object).isRequired,
+        logIn: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -15,7 +15,8 @@ export default class LoginForm extends React.PureComponent {
 
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            errorMessage: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,6 +27,21 @@ export default class LoginForm extends React.PureComponent {
             browserHistory.push('/todo');
         }
     }
+     
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.logInRequest.status === 'fulfilled')
+            browserHistory.push('/');
+
+        if (nextProps.logInRequest.rejected === 'rejected' || nextProps.logInRequest.error === 'Not Match' ) {
+            nextState.errorMessage  = '입력된 계정과 일치하는 사용자 정보를 찾을 수 없습니다.';
+        }
+
+        if (nextProps.logInRequest.rejected === 'rejected' || nextProps.logInRequest.error === 'connection error' ) {
+            nextState.errorMessage  = '서버와 연결이 종료 되었습니다. 연결을 확인해주세요.';
+        }
+
+        return true;
+    } 
 
     handleChange(e) {
         this.setState({
@@ -35,11 +51,22 @@ export default class LoginForm extends React.PureComponent {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.logIn(this.state.username, this.state.password).
-            then( result => {
-                if (result)
-                    browserHistory.push('/todo');
+
+        if (!this.state.username) {
+            this.setState({
+                errorMessage: '유저 네임을 입력하세요.'
             });
+            return;
+        } 
+
+        if (!this.state.password) {
+            this.setState({
+                errorMessage: '비밀번호를 입력하세요.'
+            });
+            return;
+        } 
+
+        this.props.logIn(this.state.username, this.state.password);
     }
 
     onClickSignUp() {
@@ -47,8 +74,14 @@ export default class LoginForm extends React.PureComponent {
     }
 
     render () {
+        let errorMessage = null;
+
+        if (this.state.errorMessage)
+            errorMessage = <div className='errorBox'>{this.state.errorMessage}</div>
+
         return (
             <form className="login-form" onSubmit={this.handleSubmit}>
+                {errorMessage}
                 Username: <input 
                     type="text"
                     name="username"
@@ -67,7 +100,6 @@ export default class LoginForm extends React.PureComponent {
                 <button type='submit'>Login</button>
                 <button type='button' onClick={this.onClickSignUp}>Sign Up</button>
             </form>
-            
         )
     }
 }
