@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 import { browserHistory } from '../../utills/Utill';
 
-export default class SignUp extends React.PureComponent {
+export default class SignUp extends React.Component {
     static propTypes = {
+        signUpRequest: PropTypes.instanceOf(Object).isRequired,
         signUp: PropTypes.func.isRequired
     };
 
@@ -15,13 +16,28 @@ export default class SignUp extends React.PureComponent {
             username: '',
             password: '',
             usernameError: '',
-            passwordError: '',
-            signUpError: ''
+            passwordError: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.errorCheck = this.errorCheck.bind(this);
+        this.onClickBack = this.onClickBack.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.signUpRequest.status === 'fulfilled')
+            browserHistory.push('/');
+
+        if (nextProps.signUpRequest.rejected === 'rejected' || nextProps.signUpRequest.error === 'unique violation' ) {
+            nextState.usernameError  = '이미 존재하는 사용자 이름입니다. 다른 사용자이름을 입력해주세요.';
+        }
+
+        if (nextProps.signUpRequest.rejected === 'rejected' || nextProps.signUpRequest.error === 'connection error' ) {
+            nextState.usernameError  = '서버와 연결이 종료 되었습니다. 연결을 확인해주세요.';
+        }
+
+        return true;
     }
 
     errorCheck() {
@@ -61,14 +77,11 @@ export default class SignUp extends React.PureComponent {
             });
         } else return;
 
-        this.props.signUp(this.state.username, this.state.password).
-            then( result => {
-                console.log(result);
-                if (result)
-                    browserHistory.push('/');
-            }).catch( err => {
-                console.log(err);
-            })
+        this.props.signUp(this.state.username, this.state.password);
+    }
+
+    onClickBack() {
+        browserHistory.push('/');
     }
 
     render() {
@@ -93,7 +106,6 @@ export default class SignUp extends React.PureComponent {
                 /> 
                 {nameErrorMessage}
                 
-
                 <h4>비밀번호를 입력하세요.</h4>
                 <input
                     name="password"
@@ -105,6 +117,7 @@ export default class SignUp extends React.PureComponent {
                 {passwordErrorMessage}
 
                 <button type='submit'>SignUp</button>
+                <button type='button' onClick={this.onClickBack}>Back</button>
             </form>
         );
     }
