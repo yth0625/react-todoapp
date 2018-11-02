@@ -27,13 +27,13 @@ export default class TaskList extends React.PureComponent {
         editTask: PropTypes.func.isRequired,
         removeTask: PropTypes.func.isRequired,
         getTaskList: PropTypes.func.isRequired,
-        login: PropTypes.func.isRequired
+        logIn: PropTypes.func.isRequired
     };
 
     constructor(props) {
         super(props);
         if ( this.props.userId === '')
-            this.props.login(getCookie('userId'));
+            this.props.logIn(getCookie('userId'));
 
         startSessionCheck();
     }

@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 
 const LOGIN = 'user/login';
 
-export const login = createAction(LOGIN); // id, password
+export const logIn = createAction(LOGIN); // id, password
 
 const initalState = Immutable.fromJS({
     userId: ''

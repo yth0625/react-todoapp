@@ -158,14 +158,15 @@ export function logIn (username, password) {
         } catch (err) {
             dispatch({
                 type: LOGIN_REJECTED,
-                payload: err
+                payload: err.errors.type
             });
             return;
         }
+
         document.cookie = `userId=${data.id}; expires=${new Date()}`;
 
         dispatch({type: LOGIN_FULFILLED});
-        dispatch(userActiions.login(data.id));
+        dispatch(userActiions.logIn(data.id));
     }
 }
 
@@ -176,33 +177,32 @@ export function signUp(username, password) {
         try {
             await doFetchWithResponse(`${serverAddress}/user`, { method: 'POST', body: JSON.stringify({username: username, password: password})});
         } catch (err) {
-            console.log(err);
             dispatch({
                 type: SIGNUP_REJECTED,
-                paylaod: err.errors.type
+                payload: err.errors.type
             });
             return;
         }
 
-        dispatch({SIGNUP_FULFILLED});
+        dispatch({type: SIGNUP_FULFILLED});
     }
 }
 
 
 async function doFetchWithResponse (url, options) {
-    const response = await fetch(url, {...options, headers: { 'Content-Type': 'application/json' }});
-    let data;
-
+    let data, response;
+    
     try {
+        response = await fetch(url, {...options, headers: { 'Content-Type': 'application/json' }});
         data = await response.json();
     } catch (err) {
-        return  new Error(err);
+        throw {errors: {type: 'connection error'}};
     }
 
     if (response.ok)
         return data;
-
-    throw {errors: data.errors[0]};
+    
+    throw {errors: {type: data.errors[0]}};
 }
 
 const initalState = Immutable.fromJS({
@@ -223,7 +223,7 @@ const initalState = Immutable.fromJS({
             status: 'not_started',
             error: null
         },
-        login: {
+        logIn: {
             status: 'not_started',
             error: null
         },
@@ -284,15 +284,15 @@ export default handleActions({
     },
 
     [LOGIN_PENDING]: (state) => {
-        return state.setIn(['requests', 'getList'], Map({status: 'started', error: null}));
+        return state.setIn(['requests', 'logIn'], Map({status: 'started', error: null}));
     },
 
     [LOGIN_FULFILLED]: (state) => {
-        return state.setIn(['requests', 'getList'], Map({status: 'fulfilled', error: null}));
+        return state.setIn(['requests', 'logIn'], Map({status: 'fulfilled', error: null}));
     },
 
     [LOGIN_REJECTED]: (state, action) => {
-        return state.setIn(['requests', 'getList'], Map({status: 'rejected', error: action.payload}));
+        return state.setIn(['requests', 'logIn'], Map({status: 'rejected', error: action.payload}));
     },
 
     [SIGNUP_PENDING]: (state) => {

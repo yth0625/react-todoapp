@@ -16,7 +16,7 @@ const mapDispatchProps = (dispatch) => ({
     editTask: (id, task, value, action, listIndex, taskIndex) => dispatch(requestActions.editTask(id, task, value, action, listIndex, taskIndex)),
     removeTask: (id, listIndex, taskIndex) => dispatch(requestActions.removeTask(id, listIndex, taskIndex)),
     getTaskList: (date, id) => dispatch(requestActions.getTaskList(date, id)),
-    login: (userId) => dispatch(userActions.login(userId))
+    logIn: (userId) => dispatch(userActions.logIn(userId))
 });
 
 const TaskListContainer = connect(
