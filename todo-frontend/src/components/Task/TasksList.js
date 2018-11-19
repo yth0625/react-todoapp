@@ -32,13 +32,16 @@ export default class TaskList extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        if ( this.props.userId === '')
+        if (!this.props.userId)
             this.props.logIn(getCookie('userId'));
 
         startSessionCheck();
     }
-
+    
     render () {
+        if (!this.props.userId)
+            return true;
+
         let AddButton;
         const TasksList = this.props.tasksList.map(
             (List, ListIndex) => {
