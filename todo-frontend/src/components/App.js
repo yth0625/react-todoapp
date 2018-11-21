@@ -7,20 +7,14 @@ import DataPickerContainer from '../containers/DatePickerContainer';
 import LoginFormContainer from '../containers/LoginFormContainer';
 import SignUpContainer from '../containers/SignUpContainer';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import { getCookie, browserHistory } from '../utills/Utill';
 
 const Todo = ({ match }) => (
     <div>
-        <MuiThemeProvider>
-            <DataPickerContainer
-                parameterString = {match.params.date}
-            />
-        </MuiThemeProvider>
-        <MuiThemeProvider>
-            <TaskListContainer/>
-        </MuiThemeProvider>
+        <DataPickerContainer
+            parameterString = {match.params.date}
+        />
+        <TaskListContainer/>
     </div>
 );
 
@@ -31,9 +25,7 @@ Todo.propTypes = {
 const Login = () => {
     return (
         <div>
-            <MuiThemeProvider>
-                <LoginFormContainer/>
-            </MuiThemeProvider>
+            <LoginFormContainer/>
         </div>
     )
 }

@@ -5,8 +5,8 @@ import { List } from 'immutable';
 
 import Task from '.';
 
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 
 import { startSessionCheck, getCookie } from '../../utills/Utill';
 
@@ -14,7 +14,8 @@ function dateCompare ( date1, date2 ) {
     if ( (date1.getFullYear() === date2.getFullYear()) &&
          (date1.getMonth() === date2.getMonth()) &&
          (date1.getDate() === date2.getDate()) )
-        return true
+        return true;
+    return false;
 }
 
 export default class TaskList extends React.PureComponent {
@@ -48,11 +49,9 @@ export default class TaskList extends React.PureComponent {
 
                 if ( dateCompare(List.get('date'), this.props.selectDate)) {
                     AddButton = (
-                        <FloatingActionButton
-                            onClick = {() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}   
-                        >
-                            <ContentAdd/>
-                        </FloatingActionButton>
+                        <Button variant="fab" color="primary" aria-label="Add" onClick={() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}>
+                            <AddIcon/>
+                        </Button>
                     )
 
                     const tasks = List.get('tasks');
