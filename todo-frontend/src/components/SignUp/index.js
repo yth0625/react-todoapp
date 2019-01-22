@@ -26,7 +26,7 @@ export default class SignUp extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.signUpRequest.status === 'fulfilled')
+        if (this.props.signUpRequest.status === 'started' && nextProps.signUpRequest.status === 'fulfilled')
             browserHistory.push('/');
 
         if (nextProps.signUpRequest.rejected === 'rejected' || nextProps.signUpRequest.error === 'unique violation' ) {
