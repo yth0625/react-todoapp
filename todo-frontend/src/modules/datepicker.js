@@ -5,9 +5,8 @@ const SELECTDATE = 'datepicker/SELCETDATE';
 
 export const selectdate = createAction(SELECTDATE);
 
-const date = new Date();
 const initialState = Map({
-    selectDate: new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    selectDate: new Date()
 });
 
 export default  handleActions({

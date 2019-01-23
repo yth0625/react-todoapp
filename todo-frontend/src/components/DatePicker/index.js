@@ -20,7 +20,7 @@ const Datepicker = ({parameterString, currentDate, onChangeDate}) => {
                 label="Select Date"
                 type="date"
                 helperText={'올바른 날짜를 입력하세요.'}
-                defaultValue={getDateToString(date)}
+                value={getDateToString(date)}
                 onChange = {(event) => {
                     const date = new Date(event.target.value);
                     if (!isNaN(new Date(date)))
