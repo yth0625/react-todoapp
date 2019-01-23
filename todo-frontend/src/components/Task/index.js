@@ -45,7 +45,7 @@ export default class Task extends React.PureComponent {
                     label="Due Date"
                     type="date"
                     defaultValue={getDateToString(this.props.task.duedate)}
-                    onChange = {(event, date) => this.props.onEdit(this.props.task, date, 'tasks/SELECTDUEDATE', this.props.listIndex, this.props.taskIndex)}
+                    onChange = {(event) => this.props.onEdit(this.props.task, new Date(event.target.value), 'tasks/SELECTDUEDATE', this.props.listIndex, this.props.taskIndex)}
                     InputLabelProps={{
                         shrink: true,
                     }}
