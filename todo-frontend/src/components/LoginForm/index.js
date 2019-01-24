@@ -10,7 +10,7 @@ export default class LoginForm extends React.Component {
         logIn: PropTypes.func.isRequired
     };
 
-    constructor(props) {
+    constructor(props) { 
         super(props);
 
         this.state = {
@@ -29,8 +29,9 @@ export default class LoginForm extends React.Component {
     }
      
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.logInRequest.status === 'fulfilled')
+        if (nextProps.logInRequest.status === 'fulfilled' && this.props.logInRequest.status === 'started'){
             browserHistory.push('/');
+        }
 
         if (nextProps.logInRequest.rejected === 'rejected' || nextProps.logInRequest.error === 'Not Match' ) {
             nextState.errorMessage  = '입력된 계정과 일치하는 사용자 정보를 찾을 수 없습니다.';
