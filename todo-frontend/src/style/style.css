@@ -9,3 +9,31 @@ body {
     width: 100%;
     position: relative;
 }
+
+.Todo{
+    display: flex;
+}
+
+.Todo .TodoNav{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 350px;
+    flex-shrink: 0;
+}
+
+.DatePicker .Calender{
+    display: block;
+    left: 100px;
+}
+
+.DatePicker .Button{
+    position: relative;
+    left: 115px;
+    margin: 0.5rem;
+    background-color: beige;
+    border-color: transparent;
+}
+
+.AddButton{
+    /*오른 정렬*/
+}

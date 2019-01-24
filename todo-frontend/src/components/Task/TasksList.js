@@ -49,7 +49,7 @@ export default class TaskList extends React.PureComponent {
 
                 if ( dateCompare(List.get('date'), this.props.selectDate)) {
                     AddButton = (
-                        <Button variant="fab" color="primary" aria-label="Add" onClick={() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}>
+                        <Button className='AddButton' variant="fab" color="primary" aria-label="Add" onClick={() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}>
                             <AddIcon/>
                         </Button>
                     )

@@ -14,8 +14,9 @@ const Datepicker = ({parameterString, currentDate, onChangeDate}) => {
     }
 
     return (
-        <div>
+        <div className='DatePicker'>
             <TextField
+                className='Calender'
                 id="duedate picker"
                 label="Select Date"
                 type="date"
@@ -31,10 +32,10 @@ const Datepicker = ({parameterString, currentDate, onChangeDate}) => {
                 }}
             />
 
-            <button onClick = {() => onChangeDate(new Date(currentDate.setDate(currentDate.getDate() - 1)))}>
+            <button className='Button' onClick = {() => onChangeDate(new Date(currentDate.setDate(currentDate.getDate() - 1)))}>
                 prev
             </button>
-            <button onClick = {() => onChangeDate(new Date(currentDate.setDate(currentDate.getDate() + 1)))}>
+            <button className='Button' onClick = {() => onChangeDate(new Date(currentDate.setDate(currentDate.getDate() + 1)))}>
                 next
             </button>
         </div>

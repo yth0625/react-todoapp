@@ -11,11 +11,14 @@ import UserSetting from '../containers/UserSetting';
 import { getCookie, browserHistory } from '../utills/Utill';
 
 const Todo = ({ match }) => (
-    <div>
-        <DataPickerContainer
-            parameterString = {match.params.date}
-        />
-        <UserSetting/>
+    <div className='Todo'>
+        <nav className='TodoNav'>
+            <DataPickerContainer
+                parameterString = {match.params.date}
+            />
+            <UserSetting/>
+            <div className='EmptyFunction'>test</div>
+        </nav>
         <TaskListContainer/>
     </div>
 );
@@ -26,7 +29,7 @@ Todo.propTypes = {
 
 const Login = () => {
     return (
-        <div>
+        <div className='LoginForm'>
             <LoginFormContainer/>
         </div>
     )
@@ -34,7 +37,7 @@ const Login = () => {
 
 const SignUp = () => {
     return (
-        <div>
+        <div className='SignUpForm'>
             <SignUpContainer/>
         </div>
     )
@@ -42,7 +45,7 @@ const SignUp = () => {
 
 const App = () => {
     return (
-        <div>
+        <div className ='App'>
             <Route history={browserHistory}>
                 <Switch>
                     <Route path="/todo/:date" component={Todo}/>

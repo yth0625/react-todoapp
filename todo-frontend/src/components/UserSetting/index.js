@@ -10,7 +10,9 @@ const UserSetting = ({logOut}) => {
     }
 
     return (
-        <button type='button' onClick={clickLogOut}>Log Out</button>
+        <div className='UserSetting'>
+            <button type='button' onClick={clickLogOut}>Log Out</button>
+        </div>
     )
 }
 
