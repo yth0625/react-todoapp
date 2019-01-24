@@ -6,6 +6,7 @@ import TaskListContainer from '../containers/TaskListContainer';
 import DataPickerContainer from '../containers/DatePickerContainer';
 import LoginFormContainer from '../containers/LoginFormContainer';
 import SignUpContainer from '../containers/SignUpContainer';
+import UserSetting from '../containers/UserSetting';
 
 import { getCookie, browserHistory } from '../utills/Utill';
 
@@ -14,6 +15,7 @@ const Todo = ({ match }) => (
         <DataPickerContainer
             parameterString = {match.params.date}
         />
+        <UserSetting/>
         <TaskListContainer/>
     </div>
 );

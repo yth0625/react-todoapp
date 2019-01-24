@@ -14,6 +14,10 @@ export function startSessionCheck() {
     }, 1000);
 }
 
+export function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 export const browserHistory = createHistory({basename: window.basename});
 
 browserHistory.listen((location, action) => {
