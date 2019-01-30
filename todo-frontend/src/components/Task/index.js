@@ -25,14 +25,15 @@ export default class Task extends React.PureComponent {
     render () {
         return (
             <div
-                className = 'Task'
+                className = "Task"
             >
                 <Checkbox
+                    id = "TaskCheckbox"
                     checked = {this.props.task.check}
                     onChange = {() => this.props.onEdit(this.props.task, !this.props.task.check, 'tasks/CHECK', this.props.listIndex, this.props.taskIndex)}
                 />
                 <TextField
-                    id = 'task textfield'
+                    id = "TaskTextfield"
                     label = 'Task'
                     placeholder = 'Task 내용을 적어주세요'
                     value = {this.props.task.text}
@@ -41,7 +42,7 @@ export default class Task extends React.PureComponent {
                 />
 
                 <TextField
-                    id="duedate picker"
+                    id="TaskDuedatePicker"
                     label="Due Date"
                     type="date"
                     defaultValue={getDateToString(this.props.task.duedate)}
@@ -51,7 +52,7 @@ export default class Task extends React.PureComponent {
                     }}
                 />
 
-                <Button variant="fab" color="primary" aria-label="Add"
+                <Button id="TaskDelete"variant="fab" color="primary" aria-label="Add"
                     onClick = { () => this.props.onRemove(this.props.task.id, this.props.listIndex, this.props.taskIndex)}
                     mini={true}
                 >
