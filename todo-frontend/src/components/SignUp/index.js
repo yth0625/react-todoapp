@@ -54,7 +54,23 @@ export default class SignUp extends React.Component {
                 usernameError: '',
                 passwordError: '필요 한 항목입니다. 값을 입력 해 주세요.'
             });
+            return false;
+        }
 
+        const usernameCheck = new RegExp('^[0-9a-z]+$'); 
+        if (!usernameCheck.test(this.state.username)) {
+            this.setState({
+                usernameError: '유저 이름은 영문, 숫자만 입력이 가능합니다.',
+                passwordError: ''
+            });
+            return false;
+        }
+
+        if (this.state.password.length > 14 && this.state.password.length < 5) {
+            this.setState({
+                usernameError: '',
+                passwordError: '패스워드는 6글자 이상 13글자 이하로 작성하셔야 합니다.'
+            });
             return false;
         }
 
