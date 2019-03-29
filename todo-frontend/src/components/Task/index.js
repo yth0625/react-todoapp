@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import TextField from '@material-ui/core/TextField';
 
@@ -52,12 +52,11 @@ export default class Task extends React.PureComponent {
                     }}
                 />
 
-                <Button id="TaskDelete"variant="fab" color="primary" aria-label="Add"
-                    onClick = { () => this.props.onRemove(this.props.task.id, this.props.listIndex, this.props.taskIndex)}
-                    mini={true}
+                <Fab id="TaskDelete" color="primary" aria-label="Delete"
+                    onClick = { () => this.props.onRemove(this.props.task.id, this.props.listIndex, this.props.taskIndex)} size='small'
                 >
                     <DeleteIcon/>
-                </Button>
+                </Fab>
             </div>
         )
     }

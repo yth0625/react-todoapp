@@ -5,7 +5,7 @@ import { List } from 'immutable';
 
 import Task from '.';
 
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import { startSessionCheck, getCookie } from '../../utills/Utill';
@@ -49,9 +49,9 @@ export default class TaskList extends React.PureComponent {
 
                 if ( dateCompare(List.get('date'), this.props.selectDate)) {
                     AddButton = (
-                        <Button className='AddButton' variant="fab" color="primary" aria-label="Add" onClick={() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)}>
+                        <Fab className='AddButton' color="primary" aria-label="Add" onClick={() => this.props.createTask(this.props.selectDate, this.props.userId, ListIndex)} size='medium'>
                             <AddIcon/>
-                        </Button>
+                        </Fab>
                     )
 
                     const tasks = List.get('tasks');
