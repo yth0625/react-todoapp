@@ -1,4 +1,5 @@
 import createHistory from 'history/createBrowserHistory';
+import dateFormat from 'dateformat';
 
 export function getCookie(name) {
     const value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
@@ -29,10 +30,6 @@ export function getDateToString(value) {
     let date = new Date(value);
     if (isNaN(date)) 
         return value;
-    else {
-        if (date.getUTCMonth() >= 9)
-            return date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
-        else
-            return date.getUTCFullYear() + '-0' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
-    }
+    else 
+        return dateFormat(date, 'isoDate');
 }
