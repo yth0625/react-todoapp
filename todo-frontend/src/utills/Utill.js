@@ -28,8 +28,5 @@ browserHistory.listen((location, action) => {
 
 export function getDateToString(value) {
     let date = new Date(value);
-    if (isNaN(date)) 
-        return value;
-    else 
-        return dateFormat(date, 'isoDate');
+    return dateFormat(date, 'isoDate');
 }
