@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {deleteCookie} from '../../utills/Utill';
+import { Button } from '@material-ui/core';
 
 const UserSetting = ({logOut}) => {
     const clickLogOut = () => {
@@ -11,7 +12,7 @@ const UserSetting = ({logOut}) => {
 
     return (
         <div className='UserSetting'>
-            <button type='button' onClick={clickLogOut}>Log Out</button>
+            <Button variant="contained" onClick={clickLogOut}>Log Out</Button>
         </div>
     )
 }
