@@ -7,6 +7,7 @@ import DataPickerContainer from '../containers/DatePickerContainer';
 import LoginFormContainer from '../containers/LoginFormContainer';
 import SignUpContainer from '../containers/SignUpContainer';
 import UserSetting from '../containers/UserSetting';
+import ExportRedmine from '../containers/ExportRedmineContainers';
 
 import { getCookie, browserHistory } from '../utills/Utill';
 
@@ -17,7 +18,7 @@ const Todo = ({ match }) => (
                 parameterString = {match.params.date}
             />
             <UserSetting/>
-            <div className='EmptyFunction'>test</div>
+            <ExportRedmine/>
         </nav>
         <TaskListContainer/>
     </div>
